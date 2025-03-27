@@ -1,0 +1,55 @@
+# Virtual environment
+venv/
+.env
+.venv/
+
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs and system files
+*.log
+logs/
+*.DS_Store  # macOS metadata
+Thumbs.db   # Windows thumbnail cache
+
+# Compiled files and output
+*.so
+*.o
+*.out
+*.exe
+*.dll
+*.dylib
+
+# IDE and Editor Settings
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Testing and coverage reports
+.coverage
+.tox/
+nosetests.xml
+pytest_cache/
+htmlcov/
+coverage.xml
+
+# Build, Distribution, and Packaging
+build/
+dist/
+*.egg-info/
+MANIFEST
+
+# Temporary or secret files
+*.bak
+*.tmp
+*.~*
+secrets.json
+config.json
