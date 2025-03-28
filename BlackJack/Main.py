@@ -115,10 +115,11 @@ while play:
             print(f"The Dealer has blackjack too! {hands['Dealer']} It's a Draw!\n")
         else:
             print(f"The Dealer has {hands['Dealer']}. You win!\n")
+    elif check_for_blackjack(hands['Dealer']):
+        print(f"Dealer has BlackJack! {hands['Dealer']} You lose!\n")
     else:
         while player_hit or dealer_hit:
-            if player_hit:
-                more_cards = input("Would you like another card? Type 'y' or 'n': \n") ### Working on skipping this question if the player has 21
+            more_cards = input("Would you like another card? Type 'y' or 'n': \n")
             if more_cards == 'n' or not player_hit:
                 player_hit = False
                 print("Dealer's turn!\n")
@@ -145,3 +146,4 @@ while play:
                     player_hit = False
                     print("You have 21!")
                     time.sleep(0.5)
+                    break
