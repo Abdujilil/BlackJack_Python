@@ -2,16 +2,20 @@ import random
 import art
 import time
 
+play = True
+cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
-def check_result(hands):
-    busted, hands["Dealer"] = is_busted(hands["Dealer"])
-    print(f"You have {sum(hands["Player"])}, the Dealer has {sum(hands["Dealer"])}.")
-    if busted:
-        print("Dealer busted! You win!!!")
+
+def check_result(final_hands):
+    dealer_busted, final_hands["Dealer"] = is_busted(final_hands["Dealer"])
+    print(f"You have {sum(final_hands["Player"])}, the Dealer has {sum(final_hands["Dealer"])}.")
+    time.sleep(0.5)
+    if dealer_busted:
+        print("Dealer dealer_busted! You win!!!")
     else:
-        if sum(hands["Dealer"]) > sum(hands["Player"]):
+        if sum(final_hands["Dealer"]) > sum(final_hands["Player"]):
             print("Dealer wins!\n")
-        elif sum(hands["Player"]) > sum(hands["Dealer"]):
+        elif sum(final_hands["Player"]) > sum(final_hands["Dealer"]):
             print("Player wins!\n")
         else:
             print("It's a draw!\n")
@@ -21,9 +25,9 @@ def dealer_hits(dealers_cards, deck):
     dealers_sum = sum(dealers_cards)
     while dealers_sum < 17:
         print("Dealer hits\n")
+        time.sleep(0.5)
         dealers_cards = one_more_card(dealers_cards, deck)
-        time.sleep(1)
-        print(f"Now the dealer has {dealers_cards}\n")
+        time.sleep(0.5)
         dealers_sum = sum(dealers_cards)
         if dealers_sum >= 17:
             return dealers_cards
@@ -52,19 +56,27 @@ def deal_cards(deck):
 
 def one_more_card(current_hand, deck):
     new_card = random.choice(deck)
+    print(f"The new card is {new_card}\n")
+    time.sleep(0.5)
     current_hand.append(new_card)
+    print(f"The cards are {current_hand}")
+    time.sleep(0.5)
+    print(f"Total is {sum(current_hand)}")
+    current_hand = replace_ace_value(current_hand)
     return current_hand
 
 
 def replace_ace_value(hand):
-    if 11 in hand:
+    if 11 in hand and sum(hand) > 21:
         hand[hand.index(11)] = 1
         print(f"The new card value is {hand}")
+        time.sleep(0.5)
+        print(f"Total is {sum(hand)}")
     return hand
 
 
 def is_busted(current_hand):
-    if 11 in current_hand:
+    if 11 in current_hand and sum(current_hand) > 21:
         current_hand[current_hand.index(11)] = 1
         return False, current_hand
     else:
@@ -74,59 +86,62 @@ def is_busted(current_hand):
             return False, current_hand
 
 
-def game_play():
-    play = True
-    cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+while play:
+    player_hit = True
+    dealer_hit = True
+    random.shuffle(cards)
+    hands = deal_cards(cards)
 
-    while play:
-        player_hit = True
-        dealer_hit = True
-        random.shuffle(cards)
-        hands = deal_cards(cards)
+    want_to_play = input("Would you like to play a game of Blackjack? Type 'y' or 'n': \n")
+    if want_to_play == 'n':
+        print("Another time then!\n")
+        time.sleep(0.5)
+        break
 
-        want_to_play = input("Would you like to play a game of Blackjack? Type 'y' or 'n': \n")
-        if want_to_play == 'n':
-            print("Another time then!\n")
-            return
+    print("\n" * 20)
+    print(art.logo)
+    time.sleep(0.5)
+    print("\nGood luck player!\n\n")
+    time.sleep(0.5)
+    print(f"Your cards are: {hands['Player']}\n")
+    time.sleep(0.5)
+    print(f"Dealer's first card is: {hands['Dealer'][0]}\n")
+    time.sleep(0.5)
 
-        print("\n" * 20)
-        print(art.logo)
-        print("\nGood luck player!\n\n")
-        print(f"Your cards are: {hands['Player']}\n")
-        print(f"Dealer's first card is: {hands['Dealer'][0]}\n")
-
-        if check_for_blackjack(hands['Player']):
-            print(f"You have blackjack! {hands['Player']}\n")
-            if check_for_blackjack(hands['Dealer']):
-                print(f"The Dealer has blackjack too! {hands['Dealer']} It's a Draw!\n")
-            else:
-                print(f"The Dealer has {hands['Dealer']}. You win!\n")
+    if check_for_blackjack(hands['Player']):
+        print(f"You have blackjack! {hands['Player']}\n")
+        time.sleep(0.5)
+        if check_for_blackjack(hands['Dealer']):
+            print(f"The Dealer has blackjack too! {hands['Dealer']} It's a Draw!\n")
         else:
-            while player_hit or dealer_hit:
-                more_cards = input("Would you like another card? Type 'y' or 'n': \n")
-                if more_cards == 'n':
-                    player_hit = False
-                    print("Dealer's turn!\n")
-                    print(f"Dealer's cards are {hands['Dealer']}\n")
-                    if should_dealer_hit(hands["Dealer"]):
-                        hands["Dealer"] = dealer_hits(hands["Dealer"], cards)
-                        check_result(hands)
-                        dealer_hit = False
-                    else:
-                        check_result(hands)
-                        dealer_hit = False
+            print(f"The Dealer has {hands['Dealer']}. You win!\n")
+    else:
+        while player_hit or dealer_hit:
+            if player_hit:
+                more_cards = input("Would you like another card? Type 'y' or 'n': \n") ### Working on skipping this question if the player has 21
+            if more_cards == 'n' or not player_hit:
+                player_hit = False
+                print("Dealer's turn!\n")
+                time.sleep(0.5)
+                print(f"Dealer's cards are {hands['Dealer']}\n")
+                time.sleep(0.5)
+                if should_dealer_hit(hands["Dealer"]):
+                    hands["Dealer"] = dealer_hits(hands["Dealer"], cards)
+                    check_result(hands)
+                    dealer_hit = False
                 else:
-                    hands["Player"] = one_more_card(hands["Player"], cards)
-                    print(f"Now you have {hands['Player']}")
-                    busted, hands["Player"] = is_busted(hands["Player"])
-                    if busted:
-                        print(f"You have {hands['Player']} busted! You lose!!\n")
-                        print(f"The Dealer has {hands['Dealer']}.\n")
-                        player_hit = False
-                        dealer_hit = False
-                    elif sum(hands["Player"]) == 21:
-                        player_hit = False
-                        print("You have 21!")
-
-
-game_play()
+                    check_result(hands)
+                    dealer_hit = False
+            else:
+                hands["Player"] = one_more_card(hands["Player"], cards)
+                busted, hands["Player"] = is_busted(hands["Player"])
+                if busted:
+                    print(f"You have {hands['Player']} busted! You lose!!\n")
+                    time.sleep(0.5)
+                    print(f"The Dealer has {hands['Dealer']}.\n")
+                    player_hit = False
+                    dealer_hit = False
+                elif sum(hands["Player"]) == 21:
+                    player_hit = False
+                    print("You have 21!")
+                    time.sleep(0.5)
